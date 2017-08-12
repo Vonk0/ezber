@@ -28,8 +28,8 @@ NOTLAR:
 Buglar ve sorunlar devamlı düzeltilecektir. 
 Arayüz ve sorulara görsellerin ilave edilmesi için çalışmalar başlamıştır. (GTK+ gui kütüphanesi kullanılacaktır)
 
-Kodları her şekilde kullanabilir, değiştirebilirsiniz. Paylaşmadan önce bana vonko.ftr@gmail.com adresinden ulaşmanız
-gerekmektedir.
+Kodları her şekilde kullanabilir, kopyalayabilir ve paylaşıp dağıtabilirsiniz. Değiştirmeden önce GNU-GPL V3.0 
+lisansı gereğince bana vonko.ftr@gmail.com adresinden ulaşmanız gerekmektedir. Yaşasın özgür yazılım!
 
 Bütün destek ve katkılara açığım, yardımlarınız her zaman memnuniyetle kabul edilecektir.
 (Amatörce ve bir hobi çalışması. Beklentinizi yüksek tutmayınız :) )
