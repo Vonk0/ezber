@@ -3,8 +3,45 @@
 #include<time.h>
 #include<string.h>
 #include<ctype.h>
+#include"fseek_e.h"
 
 /*Random question chosing*/
+
+int *ranlin;
+
+int isvalueinarray(int val, int *arr, int size);
+
+int rand_q(FILE **fp){
+	int lines, i, stat, random;
+	lines = fseek_b(fp);
+
+	ranlin = (int*)calloc(lines, sizeof(int));
+
+	printf("Soruların rastgele sorulmasını ister misiniz? (y/N): ");
+	getchar();
+	stat = getchar();
+
+	if(stat != 'y' && stat != 'Y'){
+		for(i = 0; i < lines; ++i){
+			*(ranlin + i) = i;
+		}
+	}
+	else{
+		srand(time(NULL));
+		
+		memset(ranlin, 32, lines*sizeof(int));
+
+		for(i = 0; i < lines; ++i){
+			while(isvalueinarray((random = (rand() % lines)), ranlin, lines)){
+				random = rand() % lines;
+			}
+
+			*(ranlin + i) = random;
+		}
+	}
+	rewind(*fp);
+	return lines;
+}
 
 int isvalueinarray(int val, int *arr, int size){
         int i, a;
@@ -19,26 +56,43 @@ int isvalueinarray(int val, int *arr, int size){
 }
 
 void delay(float gecikme){
-         int i, d;
-         for(;gecikme > 0; --gecikme){
-                 for ( i = 1 ; i <= 32767 ; i++ ){
-                         for ( d = 1 ; d <= 32767 ; d++ )
-                                 {}
-                 }
-         }
+        int i, d;
+	if(gecikme >= 1){
+		for(; gecikme > 0; --gecikme){
+			for (i = 1; i < 32767; ++i){
+				for (d = 1; d < 32767; ++d){
+					{}
+				}
+			}
+		}
+	}
+	else{
+		gecikme *= 32700;
+		for(i = 1; i < gecikme; ++i){
+			for(d = 1; d < 32767; ++d){}
+		}
+	}
 }
 
 void gecikme(FILE *fp){
 	rewind(fp);
-
-	int gec_sur, i;
+	int check = rand_q(&fp);
+	
+	float gec_sur;
+	int i = 0, c;
+	
 	char soru_cevap[1000];
+
 	printf("Lütfen istediğiniz gecikme süresini giriniz: ");
-	scanf("%d", &gec_sur);
+	scanf("%f", &gec_sur);
 	char *sor;
 
 	putchar('\n');
-	while(fgets(soru_cevap, 1000, fp) != NULL){
+	
+	for(c = 0; c < check; ++c){
+		fseek_e(&fp, check, *(ranlin + c));	
+
+		fgets(soru_cevap, 1000, fp);
 		sor = soru_cevap;
 
 		while(*sor != ':'){
@@ -56,19 +110,26 @@ void gecikme(FILE *fp){
 		}
 		putchar('\n');
 		fflush(stdout);
-		delay(1);
+		delay(0.5);
+
+		memset(soru_cevap, 0, 1000);
 	}
 	putchar('\n');
 }
 
 int tamamlama(FILE *fp){
 	rewind(fp);
+	int check = rand_q(&fp);
 
-	int i = 0;
+	int i = 0, c;
 	char soru_cevap[1000], cevap[998], kul[998], *sor;
 
 	putchar('\n');
-	while(fgets(soru_cevap, 1000, fp) != NULL){
+	for(c = 0; c < check; ++c){
+		fseek_e(&fp, check, *(ranlin + c));
+
+		fgets(soru_cevap, 1000, fp);
+
 		sor = soru_cevap;
 		while(*sor != ':'){
                 	putchar(*sor);
@@ -98,12 +159,12 @@ int tamamlama(FILE *fp){
 		if(strcmp(kul, cevap) == 0){
 			printf("Doğru!\n");
 			fflush(stdout);
-			delay(1);
+			delay(0.5);
 		}
 		else{
 			printf("Yanlış, doğrusu: %s\n", cevap);
 			fflush(stdout);
-			delay(1);
+			delay(0.5);
 		}
 		memset(cevap, 0, strlen(cevap));
 	}
@@ -113,12 +174,17 @@ int tamamlama(FILE *fp){
 
 void abcde(FILE *fp){
 	rewind(fp);
+	int check = rand_q(&fp);
 
 	char cevaplar[5][1000], soru_cevap[3000], *sor, abcde[] = {"ABCDE"};
-	int kul, i = 0, j;
+	int kul, i = 0, j, c;
 
 	putchar('\n');
-	while(fgets(soru_cevap, 3000, fp) != NULL){
+	for(c = 0; c < check; ++c){
+		fseek_e(&fp, check, *(ranlin + c));
+
+		fgets(soru_cevap, 3000, fp);
+
                 sor = soru_cevap;
                 while(*sor != ':'){
                         putchar(*sor);
@@ -174,14 +240,13 @@ void abcde(FILE *fp){
 		if(kul == anahtar){
 			printf("Doğru!\n");
                		fflush(stdout);
-                	delay(1);
-        	}
+                }
         	else{
                 	printf("Yanlış, doğrusu: %c. %s\n", anahtar, cevaplar[0]);
         		fflush(stdout);
-                	delay(1);
 		}
-		
+		delay(0.5);
+
 		for(i = 0; i < 5; ++i){
 			memset(cevaplar[i], 0, 1000);
 		}

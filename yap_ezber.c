@@ -24,10 +24,10 @@ FILE* in_file(){
 	}
 }
 
-int cik(FILE** dosya, int* secim){
+int cik(int* secim){
 	char dosya_ad[50];
-	int pyn, yn;
-
+	int pyn, yn = 'y';
+	
 	printf("Alıştırmadan çıktınız. Yeniden alıştırma seçmek ister misiniz? (Y/n): ");
 	getchar();
 	yn = getchar();
@@ -40,56 +40,65 @@ int cik(FILE** dosya, int* secim){
                 if(scanf(" %d", secim) != 1){
 			return 1;
 		}
+		
+	return 1;
+	}
+}
 
+void cik2(FILE **dosya, int durum){
+	int pyn;
+	if(!durum){
+		*dosya = in_file();
+	}
+	else{
 		printf("Peki kaynak dosyayı değiştirmek ister misiniz? (Y/n): ");
-                getchar();
+		getchar();
 		pyn = getchar();
-
 		if(pyn != 'n' && pyn != 'N'){
 			*dosya = in_file();
 		}
-		
-		return 1;
 	}
 }
+
 
 int main(){
 	setlocale(LC_ALL, "Turkish");
 
-	int secim, kontrol = 1, problem = 0;
+	int secim, kontrol = 1, problem = 1, durum = 0;
 
 	FILE* dosya;
-
-	printf("Lütfen alıştırma tipini seçip giriniz\n(1: gecikme, 2: tamamlama, 3: abcde): ");
-        scanf(" %d", &secim);
-	
-	dosya = in_file();
 
 	while(kontrol){
 		kontrol = 0;
 		if(problem){
 			printf("Lütfen alıştırma tipini seçip giriniz\n(1: gecikme, 2: tamamlama, 3: abcde): ");
 			scanf(" %d", &secim);
-			dosya = in_file();
 			problem = 0;
 		}
 		switch(secim){
 			case 1:
+				cik2(&dosya, durum);
 				gecikme(dosya);
-				kontrol = cik(&dosya, &secim);
+				kontrol = cik(&secim);
+				durum = 1;
 				break;
 			case 2:
+				cik2(&dosya, durum);
 				tamamlama(dosya);
-				kontrol = cik(&dosya, &secim);
+				kontrol = cik(&secim);
+				durum = 1;
 				break;
 			case 3:
+				cik2(&dosya, durum);
 				abcde(dosya);
-				kontrol = cik(&dosya, &secim);
+				kontrol = cik(&secim);
+				durum = 1;
 				break;
 			default:
-				printf("Büyük olasılıkla yanlış seçim yapılmış.\n Yeniden seçim yapmaya yönlendiriliyorsunuz:\n\n");
+				printf("\nBüyük olasılıkla yanlış seçim yapılmış.\nYeniden seçim yapmaya yönlendiriliyorsunuz:\n\n");
 				kontrol = 1;
 				problem = 1;
+				durum = 0;
 				break;
 	     	}
 	}
