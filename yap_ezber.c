@@ -22,6 +22,7 @@ FILE* in_file(){
 		
 		goto YAN;
 	}
+	return dosya;
 }
 
 int cik(int* secim){
